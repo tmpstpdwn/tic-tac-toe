@@ -124,31 +124,29 @@ fn game_logic(grid: &[[char; 3]; 3], free_cells: &Vec<&str>) -> (String, bool) {
 }
 
 // The function to handle cell marking.
-fn handle_cells(grid: &mut [[char; 3]; 3], free_cells: &mut Vec<&str>, cell: &String, choice: &String) -> bool {
-    if free_cells.contains(&cell.as_str()) {
-        let row: &mut [char; 3];
-        let column: usize = match cell.chars().nth(1).and_then(|c| c.to_digit(10)) {
-            Some(digit) => digit as usize - 1, // Adjust for 0-based index
-            None => return false, // or handle it appropriately
-        };
-        match cell.chars().next() {
-            Some('a') => { row = &mut grid[0] },
-            Some('b') => { row = &mut grid[1] },
-            Some('c') => { row = &mut grid[2] },
+fn handle_cells(grid: &mut [[char; 3]; 3], free_cells: &mut Vec<&str>, cell: &str, choice: &String) -> bool {
+    if let Some(pos) = free_cells.iter().position(|&c| c == cell) {
+        let (row, col) = match cell {
+            "a1" => (0, 0),
+            "a2" => (0, 1),
+            "a3" => (0, 2),
+            "b1" => (1, 0),
+            "b2" => (1, 1),
+            "b3" => (1, 2),
+            "c1" => (2, 0),
+            "c2" => (2, 1),
+            "c3" => (2, 2),
             _ => return false,
         };
-
         match choice.chars().next() {
-            Some(s) => { row[column] = s; },
+            Some(s) => { grid[row][col] = s; },
             _ => return false,
         };
-
-        free_cells.retain(|&s| s != cell.as_str());
+        free_cells.remove(pos);
         return true;
-    } else {
-        println!("\nErr: Wrong input, Try again.\n");
-        return false;
     }
+    println!("\nErr: Wrong input, Try again.\n");
+    false
 }
 
 //  The mainloop fn.
