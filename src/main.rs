@@ -184,6 +184,16 @@ fn main_loop() {
         }
         println!("You chose: {}", user_cell);
 
+        // Game logic
+        let (status, t_or_f) = game_logic(&grid, &free_cells);
+        if !t_or_f {
+            thread::sleep(Duration::from_secs(1));
+            print_header();
+            print_grid(&grid);
+            println!("\n{}\n", status);
+            break;
+        }
+
         // computer input and marking.
         if !free_cells.is_empty() {
             let pc_cell: String = pc_input_handler(&free_cells);
